@@ -1,27 +1,36 @@
 import { PrismaClient } from "@prisma/client";
-import { hashPassword, verifyPassword } from "../../utils/password/hash";
+
+
 import HttpException from "../../utils/api/httpException";
-import type { IRegisterSchema, ILoginSchema} from "./userValidation";
-import { generateToken } from "../../utils/middleware/authMiddleware";
+import { generateToken, UserRole } from "../../utils/middleware/authMiddleware";
+import { hashPassword, verifyPassword } from "../../utils/password/hash";
+
+
+import type { IRegisterSchema, ILoginSchema} from "./validation";
 export const prisma = new PrismaClient();
+
+/**
+ * Private -> user by ID. 
+ */
+
 
 // data : IRegisterSchema
 export const registerUserService = async (data: IRegisterSchema) => {
-  const hashedPassword = await hashPassword(data.password);
-  data.password = hashedPassword;
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email}
   });
-
+  
   if (existingUser) {
     throw new HttpException(400, "Email already exist")
   }
-
+  
+  const hashedPassword = await hashPassword(data.password);
   return prisma.user.create({
     data:{
        username: data.username,
       email: data.email,
-      password: data.password
+      password: hashedPassword,  
+      role:'MANAGER'
     }
   })
 };
@@ -53,7 +62,7 @@ export const loginUserService = async (data: ILoginSchema) => {
 const token = generateToken({
   id: user.id,
   email: user.email,
-  role: user.role
+  role: UserRole.ADMIN
 });
   
     // Return user (without password) and token

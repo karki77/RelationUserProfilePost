@@ -15,12 +15,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   username  String   @unique
   password  String
-  role      String  @default("USER")
+  role      UserRole  
   profile   Profile?
   posts     Post[]
   createdAt DateTime @default(now())

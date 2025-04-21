@@ -1,15 +1,21 @@
 import { Request, Response, NextFunction } from "express";
-import { registerUserService, getAllUsersService, loginUserService } from "./userService";
+
 import {HttpResponse} from "../../utils/api/httpResponse";
-import { IRegisterSchema, ILoginSchema } from "./userValidation";
+import { registerUserService, getAllUsersService, loginUserService } from "./service";
 
+import type { IRegisterSchema, ILoginSchema } from "./validation";
 
+/**
+ * Register User
+ */
 export const registerUser = async (req: Request<unknown, unknown, IRegisterSchema>, res: Response, next: NextFunction) => {
   try {
-    const user = await registerUserService(req.body);
+    // const user = await authService.register(req.body);
+    const data = await registerUserService(req.body);
+
     res.send(new HttpResponse({
       message:"User registered successfully",
-      data: user
+      data
     }))
   } catch (error) {
     next(error);
@@ -27,13 +33,13 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const loginData: ILoginSchema = req.body;
-    const result = await loginUserService(loginData);
+    const loggedInUser= req.user;
+    const data = await loginUserService(req.body);
     
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: result
+      data
     });
   } catch (error) {
     next(error);
