@@ -1,11 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import router from './Router/userRouter';
-import {PrismaClient} from '@prisma/client';
+import router from './Router/authRouter';
+ import {PrismaClient} from '@prisma/client';
 
 
-const prisma = new PrismaClient();
-
+ const prisma = new PrismaClient();
 
 dotenv.config();
 const PORT = process.env.PORT ?? 3000;
@@ -30,9 +29,6 @@ void (async (): Promise<void> => {
 
 app.use(express.json());
 
-// app.get('/test', (req, res) => {
-//     res.send('Hello World!')}
-// );
 
 app.use("/api/v1", router)
 app.listen(PORT, () => {

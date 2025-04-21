@@ -18,6 +18,8 @@ declare global {
   }
 }
 
+
+
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
@@ -27,6 +29,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     }
     
     const token = authHeader.split(' ')[1];
+  
     
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as TokenPayload;
@@ -51,4 +54,13 @@ export const generateToken = (payload: TokenPayload): string => {
     process.env.JWT_SECRET as string,
     { expiresIn: '24h' }
   );
+};
+
+export const verifyToken = (token: string): TokenPayload => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as TokenPayload;
+    return decoded;
+  } catch (error) {
+    throw new HttpException(401, 'Invalid or expired token');
+  }
 };

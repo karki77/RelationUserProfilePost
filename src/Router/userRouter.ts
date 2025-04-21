@@ -1,25 +1,17 @@
 import { Router } from "express";
-import { registerUser, getAllUsers, loginUser  } from "../modules/user/userController";
-import { registerUserSchema } from "../modules/user/userValidation";
-import bodyValidator from "../utils/middleware/validators/bodyValidator";
-
 const router = Router();
 
-router.get("/", getAllUsers);
-router.post('/register',
-    bodyValidator(registerUserSchema),
-  registerUser);
-router.post('/login', loginUser);
-    // auth
-    // role middleware
-    // file upload -> 
-    // validation. bodyValidation(createUser) // register);
-    
+
+router.get("/admin", (req, res) => {
+    res.send("Admin route");
+})
+
+router.get("/manager", (req, res) => {
+    res.send("Manager route");
+})
+
+router.get("/user", (req, res) => {
+    res.send("User route");
+})
+
 export default router;
-
-// validation, 
-// query validation,
-// param
-// body .. router, 
-
-// 10 min
