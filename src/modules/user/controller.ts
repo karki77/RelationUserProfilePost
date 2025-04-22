@@ -33,9 +33,7 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const loggedInUser= req.user;
     const data = await loginUserService(req.body);
-    
     res.status(200).json({
       success: true,
       message: 'Login successful',

@@ -6,16 +6,13 @@ const globalErrorHandler = async (
   res: Response,
   next: NextFunction
 ):Promise<void> => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal server error';
+  const statusCode = err.status ?? 500;
 
-  // Optional: log to a service like Sentry, write to DB, etc.
-  // await someAsyncLogger(err);
-
+  //
    res.status(statusCode).json({
     success: false,
-    message,
-    error: err,
+    message: err?.message ?? "Something went wrong",
+    originalError: err?.stack
   });
 };
 

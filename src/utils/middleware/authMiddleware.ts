@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import  HttpException  from '../api/httpException';
 
 export enum UserRole {
+  SUPERADMIN = "superadmin",
   ADMIN= "admin",
   MANAGER = "manager",
   USER= "user"

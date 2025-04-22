@@ -1,25 +1,37 @@
 import {Request, Response, NextFunction}  from 'express';
 import HttpException from '../api/httpException';
+import { prisma } from '../../modules/user/service';
 
 type Role = 'admin' | 'manager' | 'user';
 
 export const roleMiddleware = (allowedRoles: Role[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
     try {
-      if (!req.user) {
-        throw new HttpException(401, 'Authentication required');
+
+      if(!req.user){
+        throw new HttpException(401, "Unauthenticated")
       }
 
-      const userRole = (req.user.role as string).toLowerCase().trim() as Role;
-
-      if (!allowedRoles.includes(userRole)) {
-        console.warn(`Access denied: ${userRole} not in ${allowedRoles.join(', ')}`);
-        throw new HttpException(403, 'Permission denied');
-      }
-
-      next();
-    } catch (error) {
-      next(error);
+    const user= await prisma.user.findUnique({where:{email: req.user.email}});
+    
+    // user role
+    if(!user){
+      res.status(404).json({message:"User not found!"});
     }
-  };
-};
+
+    const userRole = req.user.role as Role;
+    const hasPermission = allowedRoles.includes(userRole);
+    if (!hasPermission) {
+      return next(new HttpException(403, 'Insufficient permissions'));
+    }
+  } catch(error){
+    throw new HttpException(403,"something went wrong!")
+    }
+  }
+}   // allowedRoles : [admin, user].
+
+    // allowedRoles (user.role).
+    // ! -> throw error forbidden.
+    
+  
+

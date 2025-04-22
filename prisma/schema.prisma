@@ -16,6 +16,7 @@ datasource db {
 }
 
 enum UserRole {
+  SUPERADMIN
   ADMIN
   MANAGER
   USER
@@ -26,7 +27,7 @@ model User {
   email     String   @unique
   username  String   @unique
   password  String
-  role      UserRole  
+  role      UserRole  @default(USER)
   profile   Profile?
   posts     Post[]
   createdAt DateTime @default(now())

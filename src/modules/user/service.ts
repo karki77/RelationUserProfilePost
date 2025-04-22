@@ -7,6 +7,7 @@ import { hashPassword, verifyPassword } from "../../utils/password/hash";
 
 
 import type { IRegisterSchema, ILoginSchema} from "./validation";
+import { string } from "zod";
 export const prisma = new PrismaClient();
 
 /**
@@ -27,10 +28,10 @@ export const registerUserService = async (data: IRegisterSchema) => {
   const hashedPassword = await hashPassword(data.password);
   return prisma.user.create({
     data:{
-       username: data.username,
+      username: data.username,
       email: data.email,
       password: hashedPassword,  
-      role:'MANAGER'
+      role: data.
     }
   })
 };
@@ -41,21 +42,19 @@ export const getAllUsersService = async () => {
 
 // here i need to  add the login service
 export const loginUserService = async (data: ILoginSchema) => {
-  // Find the user by email
   const user = await prisma.user.findUnique({
     where: { email: data.email },
   });
 
-  // If no user found, throw error
   if (!user) {
-    throw new HttpException(401, "Invalid email or password");
+    throw new HttpException(401, "Invalid credentials");
   }
 
   // Compare password using Argon2
   const isPasswordValid = await verifyPassword(data.password, user.password);
   
   if (!isPasswordValid) {
-    throw new HttpException(401, "Invalid email or password");
+    throw new HttpException(401, "Invalid credentials");
   }
 
 // Generate JWT token
@@ -64,6 +63,8 @@ const token = generateToken({
   email: user.email,
   role: UserRole.ADMIN
 });
+
+// 
   
     // Return user (without password) and token
   return {
