@@ -57,6 +57,7 @@ async function main() {
       role: UserRole.SUPERADMIN,
     }
   });
+  console.log("Super admin  created successfully")
 
  
 }

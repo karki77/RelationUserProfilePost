@@ -1,42 +1,49 @@
 import { PrismaClient } from "@prisma/client";
-
-
+import { toValidUserRole } from "../../utils/roleUtils";
 import HttpException from "../../utils/api/httpException";
-import { generateToken, UserRole } from "../../utils/middleware/authMiddleware";
+import { generateToken} from "../../utils/middleware/authMiddleware";
 import { hashPassword, verifyPassword } from "../../utils/password/hash";
+import { UserRole } from "@prisma/client";
 
 
 import type { IRegisterSchema, ILoginSchema} from "./validation";
 export const prisma = new PrismaClient();
 
-/**
- * Private -> user by ID. 
- */
 
-
-// data : IRegisterSchema
 export const registerUserService = async (data: IRegisterSchema) => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email: data.email}
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: data.email },
+        { username: data.username }
+      ]
+    }
   });
-  
+
   if (existingUser) {
-    throw new HttpException(400, "Email already exist")
+    if (existingUser.email === data.email) {
+      throw new HttpException(400, "Email already exists");
+    }
+    if (existingUser.username === data.username) {
+      throw new HttpException(400, "Username already exists");
+    }
   }
-  
+
   const hashedPassword = await hashPassword(data.password);
-  return prisma.user.create({
-    data:{
+
+  return await prisma.user.create({
+    data: {
       username: data.username,
       email: data.email,
-      password: hashedPassword,  
-      role:data.role
+      password: hashedPassword,
+      role: data.role
     }
-  })
+  });
 };
 
+
 export const getAllUsersService = async () => {
-  return prisma.user.findMany({ include: { profile: true, posts: true } });
+  return await prisma.user.findMany({ include: { profile: true, posts: true } });
 };
 
 // here i need to  add the login service
@@ -60,7 +67,7 @@ export const loginUserService = async (data: ILoginSchema) => {
 const token = generateToken({
   id: user.id,
   email: user.email,
-  role: UserRole.ADMIN
+  role: user.role
 });
 
 // 

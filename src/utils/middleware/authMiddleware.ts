@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import  HttpException  from '../api/httpException';
+import { UserRole } from '@prisma/client';
 
-export enum UserRole {
-  SUPERADMIN = "superadmin",
-  ADMIN= "admin",
-  MANAGER = "manager",
-  USER= "user"
-}
+// export enum UserRole {
+//   SUPERADMIN = "superadmin",
+//   ADMIN= "admin",
+//   MANAGER = "manager",
+//   USER= "user"
+// }
 
 // Define token payload type
 interface IUser {

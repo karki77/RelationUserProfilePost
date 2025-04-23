@@ -8,27 +8,45 @@ import { roleMiddleware } from "../../utils/middleware/roleMiddleware";
 
 const userRouter = Router();
 
-userRouter.get("/", getAllUsers);
 
-userRouter.post('/register' ,bodyValidator(registerUserSchema), registerUser);
-
+userRouter.post('/register', bodyValidator(registerUserSchema), registerUser);
 userRouter.post('/login', bodyValidator(loginUserSchema), loginUser);
-
-// ;userRouter.get('/register/admin', authMiddleware, roleMiddleware(["admin"]), 
-// })
+userRouter.get("/", getAllUsers);
 
 userRouter.post('/login/superadmin', loginUser)
 
-userRouter.post('/register/admin', authMiddleware, roleMiddleware(['admin']),(req, res) => {
-    res.json({message: "welcome admin"})}, bodyValidator(loginUserSchema), loginUser);
+ userRouter.get('/superadmin', authMiddleware, roleMiddleware(["SUPERADMIN"]), (req, res) => {
+    res.json({message: "welcome superadmin"})
+});
 
-userRouter.post('/register/manager', authMiddleware, roleMiddleware(['admin','manager']),(req, res) => {
-        res.json({message: "welcome manager"})}, bodyValidator(loginUserSchema), loginUser);
+userRouter.get('/admin',authMiddleware,  (req, res) => {
+    res.json({message: "welcome admin"})
+});
 
-userRouter.post('/register/user', bodyValidator(loginUserSchema), loginUser);
+userRouter.get('/manager', authMiddleware, roleMiddleware(["MANAGER"]), (req, res) => {
+    res.json({message: "welcome manager"})
+});
+
+userRouter.get('/getUsers', authMiddleware,  (req, res) => {
+res.json({message: "welcome user"})
+});
+
+// userRouter.post('/register/admin', authMiddleware, roleMiddleware(['SUPERADMIN', 'ADMIN']),(req, res) => {
+//     res.json({message: "welcome admin"})}, bodyValidator(loginUserSchema), loginUser);
+
+
+
+// userRouter.get('/register/admin', authMiddleware, roleMiddleware(['ADMIN']),(req, res) => {
+//     res.json({message: "welcome admin"})}, bodyValidator(loginUserSchema), loginUser);
+
+// userRouter.get('/register/manager', authMiddleware, roleMiddleware(['ADMIN','MANAGER']),(req, res) => {
+//         res.json({message: "welcome manager"})}, bodyValidator(loginUserSchema), loginUser);
+
+// userRouter.get('/register/user', bodyValidator(loginUserSchema), loginUser);
+        
         
     
-//
+
 export default userRouter;
 
 /**

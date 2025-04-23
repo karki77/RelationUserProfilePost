@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { z } from "zod";
 
 export const registerUserSchema = z.object({
@@ -16,7 +17,7 @@ export const registerUserSchema = z.object({
     .regex(/[a-z]/, { message: "Password must include at least one lowercase letter" })
     .regex(/[0-9]/, { message: "Password must include at least one number" })
     .regex(/[\W_]/, { message: "Password must include at least one special character" }),
-  role:z.enum(["superadmin","admin","manager","user"])
+  role:z.nativeEnum(UserRole),
 });
 
 

@@ -1,10 +1,10 @@
 import {Request, Response, NextFunction}  from 'express';
 import HttpException from '../api/httpException';
 import { prisma } from '../../modules/user/service';
+ import { UserRole } from '@prisma/client'; 
 
-type Role = 'superadmin'| 'admin' | 'manager' | 'user';
 
-export const roleMiddleware = (allowedRoles: Role[]) => {
+export const roleMiddleware = (allowedRoles: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
     try {
 
@@ -17,16 +17,19 @@ export const roleMiddleware = (allowedRoles: Role[]) => {
     // user role
     if(!user){
       res.status(404).json({message:"User not found!"});
+      return;
     }
 
-    const userRole = req.user.role as Role;
+    const userRole = req.user.role as UserRole;
     const hasPermission = allowedRoles.includes(userRole);
     if (!hasPermission) {
-      return next(new HttpException(403, 'Insufficient permissions'));
+      return next(new HttpException(403, 'Forbidden'));
     }
+
+    req.user= user
+    next()
   } catch(error){
-    throw new HttpException(403,"something went wrong!")
-    }
+next(error)    }
   }
 }   // allowedRoles : [admin, user].
 
