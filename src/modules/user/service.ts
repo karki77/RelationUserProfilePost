@@ -3,12 +3,9 @@ import { toValidUserRole } from "../../utils/roleUtils";
 import HttpException from "../../utils/api/httpException";
 import { generateToken} from "../../utils/middleware/authMiddleware";
 import { hashPassword, verifyPassword } from "../../utils/password/hash";
-import { UserRole } from "@prisma/client";
-
 
 import type { IRegisterSchema, ILoginSchema} from "./validation";
 export const prisma = new PrismaClient();
-
 
 export const registerUserService = async (data: IRegisterSchema) => {
   const existingUser = await prisma.user.findFirst({
@@ -41,7 +38,6 @@ export const registerUserService = async (data: IRegisterSchema) => {
   });
 };
 
-
 export const getAllUsersService = async () => {
   return await prisma.user.findMany({ include: { profile: true, posts: true } });
 };
@@ -70,8 +66,6 @@ const token = generateToken({
   role: user.role
 });
 
-// 
-  
     // Return user (without password) and token
   return {
     user: {
@@ -84,7 +78,7 @@ const token = generateToken({
   };
 };
 
-// export const loginUserService = async (data: IloginSchema) => {
+
 //   const user = await prisma.user.findUnique({
 //     where: { email: data.email },
 //   });

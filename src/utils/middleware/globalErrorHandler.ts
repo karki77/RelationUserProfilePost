@@ -8,7 +8,6 @@ const globalErrorHandler = async (
 ):Promise<void> => {
   const statusCode = err.status ?? 500;
 
-  //
    res.status(statusCode).json({
     success: false,
     message: err?.message ?? "Something went wrong",

@@ -1,6 +1,5 @@
 import { HTTPSTATUS } from "../enums/httpStatus";
 
- 
  export interface HttpResponseProps {
     message?: string;
     statusCode?: HTTPSTATUS;
@@ -27,7 +26,6 @@ import { HTTPSTATUS } from "../enums/httpStatus";
         } else {
             this.success = true;
         }
-
         this.message = message;
         this.data = data;
         this.docs = docs;

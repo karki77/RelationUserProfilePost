@@ -3,15 +3,12 @@ import HttpException from '../api/httpException';
 import { prisma } from '../../modules/user/service';
  import { UserRole } from '@prisma/client'; 
 
-
 export const roleMiddleware = (allowedRoles: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
     try {
-
-      if(!req.user){
+    if(!req.user){
         throw new HttpException(401, "Unauthenticated")
       }
-
     const user= await prisma.user.findUnique({where:{email: req.user.email}});
     
     // user role
@@ -25,16 +22,12 @@ export const roleMiddleware = (allowedRoles: UserRole[]) => {
     if (!hasPermission) {
       return next(new HttpException(403, 'Forbidden'));
     }
-
     req.user= user
     next()
   } catch(error){
-next(error)    }
+next(error)    
+    }
   }
-}   // allowedRoles : [admin, user].
-
-    // allowedRoles (user.role).
-    // ! -> throw error forbidden.
-    
+}  
   
 

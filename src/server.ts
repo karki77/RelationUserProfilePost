@@ -23,9 +23,6 @@ void (async (): Promise<void> => {
 
 app.use(express.json());
 
-// ✅ Root endpoint to check API status
-
-
 app.use("/api/v1", router);
 
 app.use(globalErrorHandler);

@@ -3,13 +3,6 @@ import jwt from 'jsonwebtoken';
 import  HttpException  from '../api/httpException';
 import { UserRole } from '@prisma/client';
 
-// export enum UserRole {
-//   SUPERADMIN = "superadmin",
-//   ADMIN= "admin",
-//   MANAGER = "manager",
-//   USER= "user"
-// }
-
 // Define token payload type
 interface IUser {
   id: string;
@@ -26,23 +19,17 @@ declare global {
   }
 }
 
-
-
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
-    
     if (!authHeader || !authHeader.startsWith('Bearer')) {
       throw new HttpException(401, 'Authentication required');
     }
-    
-    const token = authHeader.split(' ')[1];
-  
-    
-    // Verify token
+  const token = authHeader.split(' ')[1];
+  // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as IUser;
     
-    // Add user to request object
+  // Add user to request object
     req.user = decoded;
     
     next();

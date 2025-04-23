@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-
 import {HttpResponse} from "../../utils/api/httpResponse";
 import { registerUserService, getAllUsersService, loginUserService } from "./service";
-
 import type { IRegisterSchema, ILoginSchema } from "./validation";
 
 /**
@@ -10,10 +8,8 @@ import type { IRegisterSchema, ILoginSchema } from "./validation";
  */
 export const registerUser = async (req: Request<unknown, unknown, IRegisterSchema>, res: Response, next: NextFunction) => {
   try {
-    // const user = await authService.register(req.body);
-    const data = await registerUserService(req.body);
-
-    res.send(new HttpResponse({
+   const data = await registerUserService(req.body);
+   res.send(new HttpResponse({
       message:"User registered successfully",
       data
     }))
