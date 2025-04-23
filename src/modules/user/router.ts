@@ -17,9 +17,7 @@ userRouter.post('/login', bodyValidator(loginUserSchema), loginUser);
 // ;userRouter.get('/register/admin', authMiddleware, roleMiddleware(["admin"]), 
 // })
 
-userRouter.post('/login/superadmin', (req, res) => {
-    res.json({message: "welcome superadmin"})
-} )
+userRouter.post('/login/superadmin', loginUser)
 
 userRouter.post('/register/admin', authMiddleware, roleMiddleware(['admin']),(req, res) => {
     res.json({message: "welcome admin"})}, bodyValidator(loginUserSchema), loginUser);

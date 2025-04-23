@@ -7,7 +7,6 @@ import { hashPassword, verifyPassword } from "../../utils/password/hash";
 
 
 import type { IRegisterSchema, ILoginSchema} from "./validation";
-import { string } from "zod";
 export const prisma = new PrismaClient();
 
 /**
@@ -31,7 +30,7 @@ export const registerUserService = async (data: IRegisterSchema) => {
       username: data.username,
       email: data.email,
       password: hashedPassword,  
-      role: data.
+      role:data.role
     }
   })
 };

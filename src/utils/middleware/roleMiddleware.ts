@@ -2,7 +2,7 @@ import {Request, Response, NextFunction}  from 'express';
 import HttpException from '../api/httpException';
 import { prisma } from '../../modules/user/service';
 
-type Role = 'admin' | 'manager' | 'user';
+type Role = 'superadmin'| 'admin' | 'manager' | 'user';
 
 export const roleMiddleware = (allowedRoles: Role[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
